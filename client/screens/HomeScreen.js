@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import io from 'socket.io-client';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 const HomeScreen = () => {
-  const [messageToSend, setMessageToSend] = useState('');
   const [receivedMessages, setReceivedMessages] = useState([]);
   const socket = useRef(null);
 
@@ -15,11 +14,10 @@ const HomeScreen = () => {
     });
   }, []);
 
-  const onSend = message => {
-    console.log(message);
-    socket.current.emit('message', message[0].text);
+  const onSend = msg => {
+    socket.current.emit('message', msg[0].text);
+    setReceivedMessages(prevState => GiftedChat.append(prevState, msg));
   };
-
   return (
     <View style={{ flex: 1 }}>
       <GiftedChat
