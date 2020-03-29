@@ -1,3 +1,11 @@
+/**
+ * Function creates a message object
+ * @function createMessage
+ * @param {string} userId
+ * @param {string} messageText
+ * @return a message object 
+ */
+
 function createMessage(userId, messageText) {
   let currentMessageId = 1;
   return {
@@ -11,6 +19,14 @@ function createMessage(userId, messageText) {
     }
   };
 }
+
+/**
+ * Function sends message object to other users
+ * @function handleMessage
+ * @param {object} socket
+ * @param {array} userIds
+ * @return a broadcasted message object
+ */
 
 function handleMessage(socket, userIds) {
   socket.on('message', messageText => {

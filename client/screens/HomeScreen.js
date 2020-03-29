@@ -14,9 +14,16 @@ const HomeScreen = () => {
     });
   }, []);
 
+  /**
+ * Function emits user message to backend as well as update the UI
+ * @function onSend
+ * @param {object} msg
+ * @return a message emitted to the backend server
+ */
+
   const onSend = msg => {
-    socket.current.emit('message', msg[0].text);
     setReceivedMessages(prevState => GiftedChat.append(prevState, msg));
+    socket.current.emit('message', msg[0].text);
   };
   return (
     <View style={{ flex: 1 }}>
