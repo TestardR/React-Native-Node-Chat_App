@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
   Platform
 } from 'react-native';
 
-const JoinScreen = () => {
+const JoinScreen = ({ joinChat }) => {
+  const [username, setUsername] = useState('');
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Image
@@ -18,8 +19,13 @@ const JoinScreen = () => {
         source={require('../assets/chat.png')}
       />
       <View style={{ flex: 1, justifyContent: 'space-around' }}>
-        <TextInput style={{ fontSize: 30, textAlign: "center" }} placeholder="Enter your username" />
-        <Button title="Join Chat" />
+        <TextInput
+          onChangeText={text => setUsername(text)}
+          value={username}
+          style={{ fontSize: 30, textAlign: 'center' }}
+          placeholder="Enter your username"
+        />
+        <Button title="Join Chat" onPress={() => joinChat(username)} />
       </View>
 
       {Platform.OS === 'ios' && <KeyboardAvoidingView behavior="padding" />}

@@ -17,6 +17,20 @@ const HomeScreen = () => {
   }, []);
 
   /**
+   * Function emits join event with username to backend
+   * @function joinChat
+   * @param {string} username
+   * @return join event and a username
+   */
+
+  const joinChat = username => {
+    if (username) {
+      socket.current.emit('join', username);
+      setHasJoined(true);
+    }
+  };
+
+  /**
    * Function emits user message to backend as well as update the UI
    * @function onSend
    * @param {object} msg
@@ -27,6 +41,7 @@ const HomeScreen = () => {
     setReceivedMessages(prevState => GiftedChat.append(prevState, msg));
     socket.current.emit('message', msg[0].text);
   };
+
   return (
     <View style={{ flex: 1 }}>
       {hasJoined ? (
@@ -38,7 +53,7 @@ const HomeScreen = () => {
           }}
         />
       ) : (
-        <JoinScreen />
+        <JoinScreen joinChat={joinChat} />
       )}
       {Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
     </View>
