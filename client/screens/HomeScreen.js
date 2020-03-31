@@ -46,6 +46,7 @@ const HomeScreen = () => {
     <View style={{ flex: 1 }}>
       {hasJoined ? (
         <GiftedChat
+          renderUsernameOnMessage
           messages={receivedMessages}
           onSend={msg => onSend(msg)}
           user={{
