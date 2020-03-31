@@ -3,7 +3,7 @@ const io = new Server();
 const messageHandler = require('./handlers/message.handler')
 
 let currentUserId = 2;
-const userIds = {};
+const users = {};
 
 /**
  * Socket.io function opening a connection
@@ -14,15 +14,17 @@ const userIds = {};
 
 io.on('connection', socket => {
   console.log('a user connected!');
-  userIds[socket.id] = currentUserId++;
-  messageHandler.handleMessage(socket, userIds)
+  users[socket.id] = currentUserId++;
+  socket.on("join", username => {
+    users[socket.id].username = username;
+    messageHandler.handleMessage(socket, users)
+  })
 });
 
 /**
  * Socket.io web server starter
  * @function listen
- * @param {num} port
+ * @param {number} port
  */
-
 
 io.listen(3001);
