@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import io from 'socket.io-client';
 import { GiftedChat } from 'react-native-gifted-chat';
-import JoinScreen from './JoinScreen';
 
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
+  const { username } = route.params;
   const [receivedMessages, setReceivedMessages] = useState([]);
   const [hasJoined, setHasJoined] = useState(false);
   const socket = useRef(null);
@@ -14,21 +14,12 @@ const HomeScreen = () => {
     socket.current.on('message', message => {
       setReceivedMessages(prevState => GiftedChat.append(prevState, message));
     });
-  }, []);
 
-  /**
-   * Function emits join event with username to backend
-   * @function joinChat
-   * @param {string} username
-   * @return join event and a username
-   */
-
-  const joinChat = username => {
-    if (username) {
+    if(username) {
       socket.current.emit('join', username);
       setHasJoined(true);
     }
-  };
+  }, []);
 
   /**
    * Function emits user message to backend as well as update the UI
@@ -44,18 +35,14 @@ const HomeScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {hasJoined ? (
-        <GiftedChat
-          renderUsernameOnMessage
-          messages={receivedMessages}
-          onSend={msg => onSend(msg)}
-          user={{
-            _id: 1
-          }}
-        />
-      ) : (
-        <JoinScreen joinChat={joinChat} />
-      )}
+      <GiftedChat
+        renderUsernameOnMessage
+        messages={receivedMessages}
+        onSend={msg => onSend(msg)}
+        user={{
+          _id: 1
+        }}
+      />
       {Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
     </View>
   );

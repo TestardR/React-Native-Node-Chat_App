@@ -9,7 +9,7 @@ import {
   Platform
 } from 'react-native';
 
-const JoinScreen = ({ joinChat }) => {
+const JoinScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -25,7 +25,14 @@ const JoinScreen = ({ joinChat }) => {
           style={{ fontSize: 30, textAlign: 'center' }}
           placeholder="Enter your username"
         />
-        <Button title="Join Chat" onPress={() => joinChat(username)} />
+        <Button
+          title="Join Chat"
+          onPress={() =>
+            navigation.navigate('Home', {
+              username
+            })
+          }
+        />
       </View>
 
       {Platform.OS === 'ios' && <KeyboardAvoidingView behavior="padding" />}
