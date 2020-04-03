@@ -1,8 +1,8 @@
 const Server = require('socket.io');
 const io = new Server();
 const messageHandler = require('./handlers/message.handler');
+const uuidv1 = require('uuid/v1');
 
-let currentUserId = 2;
 let users = {};
 
 function createUserAvatar() {
@@ -11,8 +11,14 @@ function createUserAvatar() {
   return `https://placeimg.com/${rand1}/${rand2}/any`;
 }
 
+function createUsersOnline() {
+  const values = Object.values(users);
+  const onlyWithUsernames = values.filter((u) => u.username !== undefined);
+  return onlyWithUsernames;
+}
+
 /**
- * Socket.io function opening a connection
+ * Socket.io function opening a connection and dispatching actions
  * @function on
  * @param {string} connection
  * @param {object} socket
@@ -20,13 +26,16 @@ function createUserAvatar() {
 
 io.on('connection', (socket) => {
   console.log('a user connected!');
-  users[socket.id] = { userId: currentUserId++ };
-
-  /*   socket.on('join', (username) => {
+  users[socket.id] = { userId: uuidv1() };
+  socket.on('join', (username) => {
     users[socket.id].username = username;
     users[socket.id].avatar = createUserAvatar();
     messageHandler.handleMessage(socket, users);
-  }); */
+  });
+  socket.on('disconnet', () => {
+    delete users[socket.id];
+    io.emit('action', { type: 'users_online', data: createUsersOnline() });
+  });
   socket.on('action', (action) => {
     switch (action.type) {
       case 'server/hello':
@@ -36,14 +45,10 @@ io.on('connection', (socket) => {
       case 'server/join':
         users[socket.id].username = action.data;
         users[socket.id].avatar = createUserAvatar();
-        const values = Object.values(users);
-        const onlyWithUsernames = values.filter(
-          (u) => u.username !== undefined
-        );
         // io emits to all the sockets
         io.emit('action', {
           type: 'users_online',
-          data: onlyWithUsernames,
+          data: createUsersOnline(),
         });
         break;
     }
