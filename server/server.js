@@ -18,13 +18,27 @@ function createUserAvatar() {
  * @param {object} socket
  */
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   console.log('a user connected!');
   users[socket.id] = currentUserId++;
-  socket.on('join', username => {
+  socket.on('join', (username) => {
     users[socket.id].username = username;
     users[socket.id].avatar = createUserAvatar();
     messageHandler.handleMessage(socket, users);
+  });
+  socket.on('action', (action) => {
+    switch (action.type) {
+      case 'server/hello':
+        console.log('Got hello event', action.data);
+        socket.emit('action', { type: 'message', data: 'Good day' });
+        break;
+      case 'server/join':
+        console.log('Go join event', action.data);
+        users[socket.id].username = action.data;
+        users[socket.id].avatar = createUserAvatar();
+        const values = Object.values(users);
+        socket.emit('action', { type: 'users_online', data: values });
+    }
   });
 });
 

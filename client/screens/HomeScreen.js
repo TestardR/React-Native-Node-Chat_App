@@ -2,23 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import io from 'socket.io-client';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { useSelector } from 'react-redux';
 
 const HomeScreen = ({ route }) => {
-  const { username } = route.params;
   const [receivedMessages, setReceivedMessages] = useState([]);
   const [hasJoined, setHasJoined] = useState(false);
   const socket = useRef(null);
 
   useEffect(() => {
     socket.current = io('http://192.168.1.86:3001');
-    socket.current.on('message', message => {
-      setReceivedMessages(prevState => GiftedChat.append(prevState, message));
+    socket.current.on('message', (message) => {
+      setReceivedMessages((prevState) => GiftedChat.append(prevState, message));
     });
 
-    if(username) {
+    /*   if(username) {
       socket.current.emit('join', username);
       setHasJoined(true);
-    }
+    } */
   }, []);
 
   /**
@@ -28,8 +28,8 @@ const HomeScreen = ({ route }) => {
    * @return a message emitted to the backend server
    */
 
-  const onSend = msg => {
-    setReceivedMessages(prevState => GiftedChat.append(prevState, msg));
+  const onSend = (msg) => {
+    setReceivedMessages((prevState) => GiftedChat.append(prevState, msg));
     socket.current.emit('message', msg[0].text);
   };
 
@@ -38,9 +38,9 @@ const HomeScreen = ({ route }) => {
       <GiftedChat
         renderUsernameOnMessage
         messages={receivedMessages}
-        onSend={msg => onSend(msg)}
+        onSend={(msg) => onSend(msg)}
         user={{
-          _id: 1
+          _id: 1,
         }}
       />
       {Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />}
