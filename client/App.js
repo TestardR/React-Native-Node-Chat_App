@@ -20,6 +20,11 @@ function reducer(state = {}, action) {
         ...state,
         message: action.data,
       };
+    case 'users_online':
+      return {
+        ...state,
+        usersOnline: action.data,
+      };
     default:
       return state;
   }

@@ -3,7 +3,7 @@ const io = new Server();
 const messageHandler = require('./handlers/message.handler');
 
 let currentUserId = 2;
-const users = {};
+let users = {};
 
 function createUserAvatar() {
   const rand1 = Math.round(Math.random() * 200 + 100);
@@ -20,12 +20,13 @@ function createUserAvatar() {
 
 io.on('connection', (socket) => {
   console.log('a user connected!');
-  users[socket.id] = currentUserId++;
-  socket.on('join', (username) => {
+  users[socket.id] = { userId: currentUserId++ };
+
+  /*   socket.on('join', (username) => {
     users[socket.id].username = username;
     users[socket.id].avatar = createUserAvatar();
     messageHandler.handleMessage(socket, users);
-  });
+  }); */
   socket.on('action', (action) => {
     switch (action.type) {
       case 'server/hello':
@@ -33,11 +34,18 @@ io.on('connection', (socket) => {
         socket.emit('action', { type: 'message', data: 'Good day' });
         break;
       case 'server/join':
-        console.log('Go join event', action.data);
         users[socket.id].username = action.data;
         users[socket.id].avatar = createUserAvatar();
         const values = Object.values(users);
-        socket.emit('action', { type: 'users_online', data: values });
+        const onlyWithUsernames = values.filter(
+          (u) => u.username !== undefined
+        );
+        // io emits to all the sockets
+        io.emit('action', {
+          type: 'users_online',
+          data: onlyWithUsernames,
+        });
+        break;
     }
   });
 });
