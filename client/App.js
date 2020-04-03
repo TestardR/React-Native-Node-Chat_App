@@ -6,7 +6,7 @@ import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
 import { Provider } from 'react-redux';
 
-import HomeScreen from './screens/HomeScreen';
+import ChatScreen from './screens/ChatScreen';
 import JoinScreen from './screens/JoinScreen';
 import FriendListScreen from './screens/FriendListScreen';
 
@@ -54,9 +54,9 @@ export default function App() {
           }}
         >
           <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ title: 'Chat forever' }}
+            name="Chat"
+            component={ChatScreen}
+            options={(route) => ({title: route.params ? route.params.name : "Chat"})}
           />
           <Stack.Screen
             name="Join"
@@ -66,7 +66,7 @@ export default function App() {
           <Stack.Screen
             name="FriendList"
             component={FriendListScreen}
-            options={{ title: 'Chat forever' }}
+            options={{ title: 'Friends List' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

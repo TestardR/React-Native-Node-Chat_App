@@ -35,8 +35,6 @@ const JoinScreen = ({ navigation }) => {
           }}
         />
       </View>
-
-      {Platform.OS === 'ios' && <KeyboardAvoidingView behavior="padding" />}
     </View>
   );
 };
