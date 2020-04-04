@@ -1,15 +1,22 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, Platform } from 'react-native';
+import { View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const ChatScreen = ({ route }) => {
+  const { userId } = route.params;
+  const dispatch = useDispatch();
   return (
     <View style={{ flex: 1 }}>
       <GiftedChat
         renderUsernameOnMessage
         messages={[]}
-       /*  onSend={(msg) => onSend(msg)} */
+        onSend={(msg) =>
+          dispatch({
+            type: 'server/private-message',
+            data: { text: msg[0].text, to: userId },
+          })
+        }
         user={{
           _id: 1,
         }}

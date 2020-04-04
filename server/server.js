@@ -17,25 +17,21 @@ function createUsersOnline() {
   return onlyWithUsernames;
 }
 
-/**
- * Socket.io function opening a connection and dispatching actions
- * @function on
- * @param {string} connection
- * @param {object} socket
- */
-
 io.on('connection', (socket) => {
   console.log('a user connected!');
   users[socket.id] = { userId: uuidv1() };
+
   socket.on('join', (username) => {
     users[socket.id].username = username;
     users[socket.id].avatar = createUserAvatar();
     messageHandler.handleMessage(socket, users);
   });
-  socket.on('disconnet', () => {
+
+  socket.on('disconnect', () => {
     delete users[socket.id];
     io.emit('action', { type: 'users_online', data: createUsersOnline() });
   });
+
   socket.on('action', (action) => {
     switch (action.type) {
       case 'server/hello':
@@ -51,6 +47,8 @@ io.on('connection', (socket) => {
           data: createUsersOnline(),
         });
         break;
+      case 'server/private-message':
+        console.log('Got a private message', action.data);
     }
   });
 });

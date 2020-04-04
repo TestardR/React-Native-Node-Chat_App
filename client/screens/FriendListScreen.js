@@ -21,18 +21,18 @@ const { itemContainerStyles, avatarImageStyle, avatarNameViewStyle } = styles;
 
 const FriendListScreen = ({ navigation }) => {
   const usersOnline = useSelector((state) => state.usersOnline);
-  console.log('usersOnline', usersOnline);
+  // console.log('usersOnline', usersOnline);
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         data={usersOnline}
         renderItem={({ item }) => {
-          console.log('item', item);
           return (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('Chat', {
                   name: item.username,
+                  userId: item.userId
                 })
               }
             >

@@ -33,7 +33,7 @@ function reducer(state = {}, action) {
 const store = applyMiddleware(socketIoMiddleware)(createStore)(reducer);
 
 store.subscribe(() => {
-  console.log('new state', store.getState());
+  // console.log('new state', store.getState());
 });
 
 store.dispatch({ type: 'server/hello', data: 'Hello!' });
@@ -56,7 +56,7 @@ export default function App() {
           <Stack.Screen
             name="Chat"
             component={ChatScreen}
-            options={(route) => ({title: route.params ? route.params.name : "Chat"})}
+            options={({ route }) => ({ title: route.params.name })}
           />
           <Stack.Screen
             name="Join"
