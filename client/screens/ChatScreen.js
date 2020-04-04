@@ -15,12 +15,16 @@ const ChatScreen = ({ route }) => {
       <GiftedChat
         renderUsernameOnMessage
         messages={messages}
-        onSend={(msg) =>
+        onSend={(msg) => {
           dispatch({
             type: 'private_message',
             data: { message: msg[0], conversationId: userId },
-          })
-        }
+          });
+          dispatch({
+            type: 'server/private_message',
+            data: { message: msg[0], conversationId: userId },
+          });
+        }}
         user={{
           _id: selfUser,
         }}
