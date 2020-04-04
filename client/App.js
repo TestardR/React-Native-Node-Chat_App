@@ -13,12 +13,45 @@ import FriendListScreen from './screens/FriendListScreen';
 const socket = io('http://192.168.1.86:3001');
 const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
-function reducer(state = {}, action) {
+function reducer(state = { conversations: {} }, action) {
   switch (action.type) {
     case 'users_online':
+      const conversations = { ...state.conversations };
+      const usersOnline = action.data;
+      usersOnline.forEach((user) => {
+        const id = user.userId;
+        if (!conversations[id]) {
+          conversations[id] = {
+            messages: [],
+            username: user.username,
+          };
+        }
+      });
+      console.log(conversations)
       return {
         ...state,
         usersOnline: action.data,
+        conversations
+      };
+    case 'self_user':
+      return {
+        ...state,
+        selfUser: action.data,
+      };
+    case 'private_message':
+      const conversationId = action.data.conversationId;
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          [conversationId]: {
+            ...state.conversations[conversationId],
+            messages: [
+              action.data.message,
+              ...state.conversations[conversationId].messages,
+            ],
+          },
+        },
       };
     default:
       return state;

@@ -21,7 +21,7 @@ const { itemContainerStyles, avatarImageStyle, avatarNameViewStyle } = styles;
 
 const FriendListScreen = ({ navigation }) => {
   const usersOnline = useSelector((state) => state.usersOnline);
-  // console.log('usersOnline', usersOnline);
+  
   return (
     <View style={{ flex: 1 }}>
       <FlatList

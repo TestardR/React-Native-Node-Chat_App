@@ -36,6 +36,8 @@ io.on('connection', (socket) => {
           type: 'users_online',
           data: createUsersOnline(),
         });
+
+        socket.emit('action', { type: 'self_user', data: users[socket.id] });
         break;
       case 'server/private-message':
         console.log('Got a private message', action.data);
